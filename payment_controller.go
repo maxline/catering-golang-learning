@@ -9,7 +9,7 @@ import (
 
 type PaymentController struct {
 	payments map[string]*Payment
-	orders   map[string]*Order // Ссылка на заказы для получения суммы
+	orders   map[string]*Order // Reference to orders for getting amount
 }
 
 func NewPaymentController() *PaymentController {
@@ -19,46 +19,46 @@ func NewPaymentController() *PaymentController {
 	}
 }
 
-// SetOrderReference устанавливает ссылку на заказы
+// SetOrderReference sets reference to orders
 func (pc *PaymentController) SetOrderReference(orders map[string]*Order) {
 	pc.orders = orders
 }
 
-// ProcessPayment обрабатывает платеж (мок-реализация)
+// ProcessPayment processes payment (mock implementation)
 func (pc *PaymentController) ProcessPayment(c echo.Context) error {
 	var req PaymentRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Неверный формат данных",
+			Message: "Invalid data format",
 		})
 	}
 
-	// Валидация
+	// Validation
 	if req.OrderID == "" {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "ID заказа обязателен",
+			Message: "Order ID is required",
 		})
 	}
 
 	if req.Method == "" {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Метод оплаты обязателен",
+			Message: "Payment method is required",
 		})
 	}
 
-	// Проверяем существование заказа
+	// Check if order exists
 	order, exists := pc.orders[req.OrderID]
 	if !exists {
 		return c.JSON(http.StatusNotFound, APIResponse{
 			Success: false,
-			Message: "Заказ не найден",
+			Message: "Order not found",
 		})
 	}
 
-	// Валидация метода оплаты
+	// Payment method validation
 	validMethods := []string{PaymentMethodCard, PaymentMethodCash, PaymentMethodOnline}
 	isValidMethod := false
 	for _, method := range validMethods {
@@ -71,24 +71,24 @@ func (pc *PaymentController) ProcessPayment(c echo.Context) error {
 	if !isValidMethod {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Неверный метод оплаты",
+			Message: "Invalid payment method",
 		})
 	}
 
-	// Создаем платеж
+	// Create payment
 	payment := NewPayment(req.OrderID, order.TotalAmount, req.Method)
 	pc.payments[payment.ID] = payment
 
-	// Мок-обработка платежа (в реальном приложении здесь была бы интеграция с платежной системой)
-	// Имитируем успешную оплату в 90% случаев
+	// Mock payment processing (in real application there would be payment system integration)
+	// Simulate successful payment in 90% of cases
 	success := true
-	if time.Now().UnixNano()%10 == 0 { // 10% вероятность неудачи
+	if time.Now().UnixNano()%10 == 0 { // 10% failure probability
 		success = false
 	}
 
 	if success {
 		payment.Status = PaymentStatusSuccess
-		// Обновляем статус заказа на "подтвержден"
+		// Update order status to "confirmed"
 		order.Status = OrderStatusConfirmed
 		order.UpdatedAt = time.Now()
 	} else {
@@ -97,7 +97,7 @@ func (pc *PaymentController) ProcessPayment(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, APIResponse{
 		Success: true,
-		Message: "Платеж обработан",
+		Message: "Payment processed",
 		Data: map[string]interface{}{
 			"payment": payment,
 			"success": success,
@@ -105,7 +105,7 @@ func (pc *PaymentController) ProcessPayment(c echo.Context) error {
 	})
 }
 
-// GetPaymentStatus возвращает статус платежа
+// GetPaymentStatus returns payment status
 func (pc *PaymentController) GetPaymentStatus(c echo.Context) error {
 	paymentID := c.Param("id")
 
@@ -113,7 +113,7 @@ func (pc *PaymentController) GetPaymentStatus(c echo.Context) error {
 	if !exists {
 		return c.JSON(http.StatusNotFound, APIResponse{
 			Success: false,
-			Message: "Платеж не найден",
+			Message: "Payment not found",
 		})
 	}
 

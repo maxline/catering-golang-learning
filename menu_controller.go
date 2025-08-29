@@ -7,25 +7,25 @@ import (
 )
 
 type MenuController struct {
-	menu      []MenuItem
+	menu       []MenuItem
 	categories []Category
 }
 
 func NewMenuController() *MenuController {
-	// Инициализируем тестовые данные
+	// Initialize test data
 	categories := []Category{
-		{ID: "1", Name: "Закуски"},
-		{ID: "2", Name: "Основные блюда"},
-		{ID: "3", Name: "Десерты"},
-		{ID: "4", Name: "Напитки"},
-		{ID: "5", Name: "Салаты"},
+		{ID: "1", Name: "Appetizers"},
+		{ID: "2", Name: "Main Dishes"},
+		{ID: "3", Name: "Desserts"},
+		{ID: "4", Name: "Beverages"},
+		{ID: "5", Name: "Salads"},
 	}
 
 	menu := []MenuItem{
 		{
 			ID:          "1",
-			Name:        "Брускетта с томатами",
-			Description: "Итальянская закуска с помидорами и базиликом",
+			Name:        "Bruschetta with Tomatoes",
+			Description: "Italian appetizer with tomatoes and basil",
 			Price:       350.0,
 			Category:    "1",
 			Available:   true,
@@ -33,8 +33,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "2",
-			Name:        "Карпаччо из говядины",
-			Description: "Тонко нарезанная сырая говядина с оливковым маслом",
+			Name:        "Beef Carpaccio",
+			Description: "Thinly sliced raw beef with olive oil",
 			Price:       650.0,
 			Category:    "1",
 			Available:   true,
@@ -42,8 +42,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "3",
-			Name:        "Стейк Рибай",
-			Description: "Сочный стейк из мраморной говядины",
+			Name:        "Ribeye Steak",
+			Description: "Juicy marbled beef steak",
 			Price:       1200.0,
 			Category:    "2",
 			Available:   true,
@@ -51,8 +51,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "4",
-			Name:        "Лосось на гриле",
-			Description: "Филе лосося с овощами гриль",
+			Name:        "Grilled Salmon",
+			Description: "Salmon fillet with grilled vegetables",
 			Price:       850.0,
 			Category:    "2",
 			Available:   true,
@@ -60,8 +60,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "5",
-			Name:        "Цезарь с курицей",
-			Description: "Классический салат с куриным филе",
+			Name:        "Caesar Salad with Chicken",
+			Description: "Classic salad with chicken breast",
 			Price:       450.0,
 			Category:    "5",
 			Available:   true,
@@ -69,8 +69,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "6",
-			Name:        "Греческий салат",
-			Description: "Свежие овощи с фетой и оливками",
+			Name:        "Greek Salad",
+			Description: "Fresh vegetables with feta cheese and olives",
 			Price:       380.0,
 			Category:    "5",
 			Available:   true,
@@ -78,8 +78,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "7",
-			Name:        "Тирамису",
-			Description: "Итальянский десерт с кофе и маскарпоне",
+			Name:        "Tiramisu",
+			Description: "Italian dessert with coffee and mascarpone",
 			Price:       420.0,
 			Category:    "3",
 			Available:   true,
@@ -87,8 +87,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "8",
-			Name:        "Чизкейк",
-			Description: "Классический нью-йоркский чизкейк",
+			Name:        "Cheesecake",
+			Description: "Classic New York cheesecake",
 			Price:       380.0,
 			Category:    "3",
 			Available:   true,
@@ -96,8 +96,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "9",
-			Name:        "Латте",
-			Description: "Кофе с молоком",
+			Name:        "Latte",
+			Description: "Coffee with milk",
 			Price:       180.0,
 			Category:    "4",
 			Available:   true,
@@ -105,8 +105,8 @@ func NewMenuController() *MenuController {
 		},
 		{
 			ID:          "10",
-			Name:        "Свежевыжатый апельсиновый сок",
-			Description: "Натуральный сок из апельсинов",
+			Name:        "Fresh Orange Juice",
+			Description: "Natural juice from oranges",
 			Price:       220.0,
 			Category:    "4",
 			Available:   true,
@@ -115,12 +115,12 @@ func NewMenuController() *MenuController {
 	}
 
 	return &MenuController{
-		menu:      menu,
+		menu:       menu,
 		categories: categories,
 	}
 }
 
-// GetMenu возвращает полное меню
+// GetMenu returns the full menu
 func (mc *MenuController) GetMenu(c echo.Context) error {
 	return c.JSON(http.StatusOK, APIResponse{
 		Success: true,
@@ -128,7 +128,7 @@ func (mc *MenuController) GetMenu(c echo.Context) error {
 	})
 }
 
-// GetCategories возвращает категории блюд
+// GetCategories returns dish categories
 func (mc *MenuController) GetCategories(c echo.Context) error {
 	return c.JSON(http.StatusOK, APIResponse{
 		Success: true,

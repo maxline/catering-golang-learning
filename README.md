@@ -1,42 +1,42 @@
 # Catering Service API
 
-Простое приложение для кейтеринга на Go с использованием Echo framework.
+Simple catering application in Go using Echo framework.
 
-## Возможности
+## Features
 
-- Просмотр меню и категорий блюд
-- Создание и управление заказами
-- Мок-оплата заказов
-- Отслеживание статуса заказов
+- View menu and dish categories
+- Create and manage orders
+- Mock payment processing
+- Track order status
 
-## Запуск приложения
+## Running the Application
 
-1. Установите зависимости:
+1. Install dependencies:
 ```bash
 go mod tidy
 ```
 
-2. Запустите сервер:
+2. Start the server:
 ```bash
 go run .
 ```
 
-Сервер запустится на порту `:8080`
+The server will start on port `:8080`
 
 ## API Endpoints
 
-### Меню
+### Menu
 
 #### GET /api/menu
-Получить полное меню
+Get full menu
 ```json
 {
   "success": true,
   "data": [
     {
       "id": "1",
-      "name": "Брускетта с томатами",
-      "description": "Итальянская закуска с помидорами и базиликом",
+      "name": "Bruschetta with Tomatoes",
+      "description": "Italian appetizer with tomatoes and basil",
       "price": 350.0,
       "category": "1",
       "available": true,
@@ -47,31 +47,31 @@ go run .
 ```
 
 #### GET /api/menu/categories
-Получить категории блюд
+Get dish categories
 ```json
 {
   "success": true,
   "data": [
     {
       "id": "1",
-      "name": "Закуски"
+      "name": "Appetizers"
     }
   ]
 }
 ```
 
-### Заказы
+### Orders
 
 #### POST /api/orders
-Создать новый заказ
+Create new order
 ```json
 {
-  "customer_name": "Иван Иванов",
+  "customer_name": "John Doe",
   "customer_phone": "+7-999-123-45-67",
   "items": [
     {
       "menu_item_id": "1",
-      "name": "Брускетта с томатами",
+      "name": "Bruschetta with Tomatoes",
       "quantity": 2,
       "price": 350.0,
       "total": 700.0
@@ -81,13 +81,13 @@ go run .
 ```
 
 #### GET /api/orders/:id
-Получить заказ по ID
+Get order by ID
 ```json
 {
   "success": true,
   "data": {
     "id": "uuid-here",
-    "customer_name": "Иван Иванов",
+    "customer_name": "John Doe",
     "customer_phone": "+7-999-123-45-67",
     "items": [...],
     "total_amount": 700.0,
@@ -99,7 +99,7 @@ go run .
 ```
 
 #### GET /api/orders
-Получить все заказы
+Get all orders
 ```json
 {
   "success": true,
@@ -108,25 +108,25 @@ go run .
 ```
 
 #### PUT /api/orders/:id/status
-Обновить статус заказа
+Update order status
 ```json
 {
   "status": "confirmed"
 }
 ```
 
-Доступные статусы:
-- `pending` - ожидает подтверждения
-- `confirmed` - подтвержден
-- `preparing` - готовится
-- `ready` - готов
-- `delivered` - доставлен
-- `cancelled` - отменен
+Available statuses:
+- `pending` - waiting for confirmation
+- `confirmed` - confirmed
+- `preparing` - being prepared
+- `ready` - ready
+- `delivered` - delivered
+- `cancelled` - cancelled
 
-### Платежи
+### Payments
 
 #### POST /api/payments
-Обработать платеж
+Process payment
 ```json
 {
   "order_id": "uuid-here",
@@ -134,13 +134,13 @@ go run .
 }
 ```
 
-Доступные методы оплаты:
-- `card` - карта
-- `cash` - наличные
-- `online` - онлайн
+Available payment methods:
+- `card` - card
+- `cash` - cash
+- `online` - online
 
 #### GET /api/payments/:id
-Получить статус платежа
+Get payment status
 ```json
 {
   "success": true,
@@ -155,28 +155,28 @@ go run .
 }
 ```
 
-## Тестирование API
+## API Testing
 
-### Пример создания заказа и оплаты
+### Example of creating an order and payment
 
-1. Создайте заказ:
+1. Create an order:
 ```bash
 curl -X POST http://localhost:8080/api/orders \
   -H "Content-Type: application/json" \
   -d '{
-    "customer_name": "Тест Клиент",
+    "customer_name": "Test Customer",
     "customer_phone": "+7-999-123-45-67",
     "items": [
       {
         "menu_item_id": "1",
-        "name": "Брускетта с томатами",
+        "name": "Bruschetta with Tomatoes",
         "quantity": 1,
         "price": 350.0,
         "total": 350.0
       },
       {
         "menu_item_id": "3",
-        "name": "Стейк Рибай",
+        "name": "Ribeye Steak",
         "quantity": 1,
         "price": 1200.0,
         "total": 1200.0
@@ -185,7 +185,7 @@ curl -X POST http://localhost:8080/api/orders \
   }'
 ```
 
-2. Оплатите заказ (используйте order_id из предыдущего ответа):
+2. Pay for the order (use order_id from previous response):
 ```bash
 curl -X POST http://localhost:8080/api/payments \
   -H "Content-Type: application/json" \
@@ -195,28 +195,28 @@ curl -X POST http://localhost:8080/api/payments \
   }'
 ```
 
-3. Проверьте статус заказа:
+3. Check order status:
 ```bash
 curl http://localhost:8080/api/orders/ORDER_ID_FROM_PREVIOUS_RESPONSE
 ```
 
-## Структура проекта
+## Project Structure
 
 ```
 catering-service/
-├── main.go              # Основной файл приложения
-├── models.go            # Модели данных
-├── menu_controller.go   # Контроллер меню
-├── order_controller.go  # Контроллер заказов
-├── payment_controller.go # Контроллер платежей
-├── go.mod              # Зависимости Go
-└── README.md           # Документация
+├── main.go              # Main application file
+├── models.go            # Data models
+├── menu_controller.go   # Menu controller
+├── order_controller.go  # Order controller
+├── payment_controller.go # Payment controller
+├── go.mod              # Go dependencies
+└── README.md           # Documentation
 ```
 
-## Особенности
+## Features
 
-- Все данные хранятся в памяти (при перезапуске сервера данные теряются)
-- Платежи обрабатываются мок-логикой (90% успешных, 10% неудачных)
-- Валидация входных данных
-- CORS поддержка для фронтенда
-- Логирование запросов
+- All data is stored in memory (data is lost when server restarts)
+- Payments are processed with mock logic (90% successful, 10% failed)
+- Input data validation
+- CORS support for frontend
+- Request logging

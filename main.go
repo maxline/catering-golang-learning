@@ -9,37 +9,37 @@ import (
 )
 
 func main() {
-	// Создаем новый экземпляр Echo
+	// Create new Echo instance
 	e := echo.New()
 
-	// Добавляем middleware
+	// Add middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
-	// Инициализируем контроллеры
+	// Initialize controllers
 	menuController := NewMenuController()
 	orderController := NewOrderController()
 	paymentController := NewPaymentController()
 
-	// Связываем контроллеры (для доступа к заказам в платежах)
+	// Link controllers (for access to orders in payments)
 	paymentController.SetOrderReference(orderController.orders)
 
-	// Роуты для меню
+	// Menu routes
 	e.GET("/api/menu", menuController.GetMenu)
 	e.GET("/api/menu/categories", menuController.GetCategories)
 
-	// Роуты для заказов
+	// Order routes
 	e.POST("/api/orders", orderController.CreateOrder)
 	e.GET("/api/orders/:id", orderController.GetOrder)
 	e.GET("/api/orders", orderController.GetAllOrders)
 	e.PUT("/api/orders/:id/status", orderController.UpdateOrderStatus)
 
-	// Роуты для оплаты
+	// Payment routes
 	e.POST("/api/payments", paymentController.ProcessPayment)
 	e.GET("/api/payments/:id", paymentController.GetPaymentStatus)
 
-	// Запускаем сервер
+	// Start server
 	log.Println("Catering service starting on :8080")
 	if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
 		log.Fatal("Error starting server:", err)

@@ -17,50 +17,50 @@ func NewOrderController() *OrderController {
 	}
 }
 
-// CreateOrder создает новый заказ
+// CreateOrder creates a new order
 func (oc *OrderController) CreateOrder(c echo.Context) error {
 	var req CreateOrderRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Неверный формат данных",
+			Message: "Invalid data format",
 		})
 	}
 
-	// Валидация
+	// Validation
 	if req.CustomerName == "" {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Имя клиента обязательно",
+			Message: "Customer name is required",
 		})
 	}
 
 	if req.CustomerPhone == "" {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Телефон клиента обязателен",
+			Message: "Customer phone is required",
 		})
 	}
 
 	if len(req.Items) == 0 {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Заказ должен содержать хотя бы одну позицию",
+			Message: "Order must contain at least one item",
 		})
 	}
 
-	// Создаем заказ
+	// Create order
 	order := NewOrder(req.CustomerName, req.CustomerPhone, req.Items)
 	oc.orders[order.ID] = order
 
 	return c.JSON(http.StatusCreated, APIResponse{
 		Success: true,
-		Message: "Заказ успешно создан",
+		Message: "Order created successfully",
 		Data:    order,
 	})
 }
 
-// GetOrder возвращает заказ по ID
+// GetOrder returns an order by ID
 func (oc *OrderController) GetOrder(c echo.Context) error {
 	orderID := c.Param("id")
 
@@ -68,7 +68,7 @@ func (oc *OrderController) GetOrder(c echo.Context) error {
 	if !exists {
 		return c.JSON(http.StatusNotFound, APIResponse{
 			Success: false,
-			Message: "Заказ не найден",
+			Message: "Order not found",
 		})
 	}
 
@@ -78,7 +78,7 @@ func (oc *OrderController) GetOrder(c echo.Context) error {
 	})
 }
 
-// GetAllOrders возвращает все заказы
+// GetAllOrders returns all orders
 func (oc *OrderController) GetAllOrders(c echo.Context) error {
 	orders := make([]*Order, 0, len(oc.orders))
 	for _, order := range oc.orders {
@@ -91,7 +91,7 @@ func (oc *OrderController) GetAllOrders(c echo.Context) error {
 	})
 }
 
-// UpdateOrderStatus обновляет статус заказа
+// UpdateOrderStatus updates order status
 func (oc *OrderController) UpdateOrderStatus(c echo.Context) error {
 	orderID := c.Param("id")
 
@@ -99,7 +99,7 @@ func (oc *OrderController) UpdateOrderStatus(c echo.Context) error {
 	if !exists {
 		return c.JSON(http.StatusNotFound, APIResponse{
 			Success: false,
-			Message: "Заказ не найден",
+			Message: "Order not found",
 		})
 	}
 
@@ -107,11 +107,11 @@ func (oc *OrderController) UpdateOrderStatus(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Неверный формат данных",
+			Message: "Invalid data format",
 		})
 	}
 
-	// Валидация статуса
+	// Status validation
 	validStatuses := []string{
 		OrderStatusPending,
 		OrderStatusConfirmed,
@@ -132,17 +132,17 @@ func (oc *OrderController) UpdateOrderStatus(c echo.Context) error {
 	if !isValidStatus {
 		return c.JSON(http.StatusBadRequest, APIResponse{
 			Success: false,
-			Message: "Неверный статус заказа",
+			Message: "Invalid order status",
 		})
 	}
 
-	// Обновляем статус
+	// Update status
 	order.Status = req.Status
 	order.UpdatedAt = time.Now()
 
 	return c.JSON(http.StatusOK, APIResponse{
 		Success: true,
-		Message: "Статус заказа обновлен",
+		Message: "Order status updated",
 		Data:    order,
 	})
 }
